@@ -1,0 +1,12 @@
+{
+    "timezone": "default",
+    "logging": {
+        "enabled": true,
+        "verbosity": "normal",
+        "dateFormat": "c",
+        "messageFormat": "(%s)\t[%s]: \t%s\n",
+        "path": "logs",
+        "fileDateFormat": "Y-m-d_H-i-s",
+        "chmod": "0600"
+    }
+}
