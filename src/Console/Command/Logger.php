@@ -81,6 +81,7 @@ class Logger extends BasicCommandConfiguration {
 
         if (!$io->getInput()->getOption(self::NOMAIL_OPTION)) {
             $mailer = new Mailer(
+                /** @phpstan-ignore-next-line */
                 application: $this->getApplication(),
                 isMailSendEnabled: $config->getLogging()->getSendMail(),
                 mailConfig: $config->getMail(),
