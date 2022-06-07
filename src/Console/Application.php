@@ -34,7 +34,7 @@ class Application extends BaseApplication {
 
     /* Version Specification: https://semver.org/ */
     public const VERSION_MAJOR = 1;
-    public const VERSION_MINOR = 0;
+    public const VERSION_MINOR = 1;
     public const VERSION_PATCH = 0;
     public const VERSION_RELEASE = "";//beta|b|RC|alpha|a|patch|pl|p or leave blank for stable
     public const VERSION_CORE = self::VERSION_MAJOR . '.' . self::VERSION_MINOR . '.' . self::VERSION_PATCH;

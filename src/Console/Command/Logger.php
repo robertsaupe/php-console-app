@@ -16,10 +16,12 @@ namespace robertsaupe\ConsoleApp\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use robertsaupe\ConsoleApp\Console\IO;
 use robertsaupe\ConsoleApp\Console\Logger as ConsoleLogger;
+use robertsaupe\ConsoleApp\Console\Mailer;
 
 class Logger extends BasicCommandConfiguration {
 
     private const NOLOG_OPTION = 'no-log';
+    private const NOMAIL_OPTION = 'no-mail';
 
     protected function configure(): void {
         parent::configure();
@@ -30,6 +32,12 @@ class Logger extends BasicCommandConfiguration {
             null,
             InputOption::VALUE_NONE,
             'Disable logging for this update'
+        );
+        $this->addOption(
+            self::NOMAIL_OPTION,
+            null,
+            InputOption::VALUE_NONE,
+            'Disable send mail for this update'
         );
     }
 
@@ -70,6 +78,15 @@ class Logger extends BasicCommandConfiguration {
         $logger->veryverboseNoOutput('test.6');
         $logger->debugNoOutput('test.7.1');
         $logger->veryveryverboseNoOutput('test.7.2');
+
+        if (!$io->getInput()->getOption(self::NOMAIL_OPTION)) {
+            $mailer = new Mailer(
+                application: $this->getApplication(),
+                isMailSendEnabled: $config->getLogging()->getSendMail(),
+                mailConfig: $config->getMail(),
+                logger: $logger
+            );
+        }
 
         return 0;
     }

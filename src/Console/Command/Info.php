@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace robertsaupe\ConsoleApp\Console\Command;
 
 use function realpath;
-use Symfony\Component\Console\Output\OutputInterface;
 use robertsaupe\ConsoleApp\Console\IO;
 use robertsaupe\SystemInfo\Info as siInfo;
 use robertsaupe\SystemInfo\OS;

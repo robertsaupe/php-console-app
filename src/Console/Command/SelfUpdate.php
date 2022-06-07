@@ -19,13 +19,15 @@ use Symfony\Component\Console\Input\InputOption;
 use robertsaupe\ConsoleApp\Console\IO;
 use robertsaupe\Phar\SelfUpdate\ManifestUpdate;
 use robertsaupe\Phar\SelfUpdate\ManifestStrategy;
-use robertsaupe\ConsoleApp\Console\Logger as ConsoleLogger;
+use robertsaupe\ConsoleApp\Console\Logger;
+use robertsaupe\ConsoleApp\Console\Mailer;
 
 class SelfUpdate extends BasicCommandConfiguration {
 
     private const CHECK_OPTION = 'check';
 
     private const NOLOG_OPTION = 'no-log';
+    private const NOMAIL_OPTION = 'no-mail';
 
     private const ROLLBACK_OPTION = 'rollback';
     private const ROLLBACK_OPTION_SHORT = 'r';
@@ -33,7 +35,7 @@ class SelfUpdate extends BasicCommandConfiguration {
     private const UNSTABLE_OPTION = 'unstable';
     private const UNSTABLE_OPTION_SHORT = 'u';
 
-    private const MANIFEST_URL = 'https://robertsaupe.github.io/php-console-app/release';
+    private const MANIFEST_URL = 'https://robertsaupe.github.io/php-console-app/release/manifest.json';
 
     protected function configure(): void {
         parent::configure();
@@ -53,6 +55,12 @@ class SelfUpdate extends BasicCommandConfiguration {
             'Disable logging for this update'
         );
         $this->addOption(
+            self::NOMAIL_OPTION,
+            null,
+            InputOption::VALUE_NONE,
+            'Disable send mail for this update'
+        );
+        $this->addOption(
             self::ROLLBACK_OPTION,
             self::ROLLBACK_OPTION_SHORT,
             InputOption::VALUE_NONE,
@@ -69,7 +77,7 @@ class SelfUpdate extends BasicCommandConfiguration {
     public function executeCommand(IO $io):int {
         $config = $this->getConfig($io);
 
-        $logger = new ConsoleLogger(
+        $logger = new Logger(
             /** @phpstan-ignore-next-line */
             application: $this->getApplication(),
             io: $io,
@@ -145,6 +153,15 @@ class SelfUpdate extends BasicCommandConfiguration {
         }
 
         $io->info('You can also select unstable update stability using --unstable or -u');
+
+        if (!$io->getInput()->getOption(self::NOMAIL_OPTION)) {
+            $mailer = new Mailer(
+                application: $this->getApplication(),
+                isMailSendEnabled: $config->getLogging()->getSendMail(),
+                mailConfig: $config->getMail(),
+                logger: $logger
+            );
+        }
 
         return 0;
     }
